@@ -81,6 +81,8 @@ class YamlData(object):
         return len(list(self.yield_dots(value)))
 
     def get_entity(self, name, pathname, settings):
+        options = self._data.get('options', {})
+
         classes = self._data.get('classes')
         if classes is None:
             classes = []
@@ -95,6 +97,21 @@ class YamlData(object):
         parameters = self._data.get('parameters')
         if parameters is None:
             parameters = {}
+
+        if options.get('namespaced', False): 
+            dirname = os.path.dirname(pathname)
+            namespaced = {}
+            last = namespaced
+            keys = dirname.split(os.sep)
+            
+            for i in range(0, len(keys) - 1):
+                last[keys[i]] = {}
+                last = last[keys[i]]
+
+            last[keys[-1]] = parameters
+            
+            parameters = namespaced
+
         parameters = datatypes.Parameters(parameters, settings, self._uri)
 
         exports = self._data.get('exports')
