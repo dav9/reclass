@@ -24,7 +24,7 @@ class Entity(object):
     '''
     def __init__(self, settings, classes=None, applications=None,
                  parameters=None, exports=None, uri=None, name=None,
-                 pathname=None, environment=None):
+                 pathname=None, environment=None, namespace=None):
         self._uri = '' if uri is None else uri
         self._name = '' if name is None else name
         self._pathname = '' if pathname is None else pathname
@@ -34,6 +34,10 @@ class Entity(object):
         self._parameters = self._set_field(parameters, Parameters, pars)
         self._exports = self._set_field(exports, Exports, pars)
         self._environment = environment
+        if namespace != None:
+            self._namespaces = set([namespace])
+        else: 
+            self._namespaces = set()
 
     name = property(lambda s: s._name)
     uri = property(lambda s: s._uri)
@@ -50,6 +54,10 @@ class Entity(object):
     @environment.setter
     def environment(self, value):
         self._environment = value
+
+    @property
+    def namespaces(self):
+        return self._namespaces
 
     def _set_field(self, received_value, expected_type, parameters=None):
         if parameters is None:
@@ -71,6 +79,7 @@ class Entity(object):
         self._parameters._uri = other.uri
         if other.environment != None:
             self._environment = other.environment
+        self._namespaces.update(other.namespaces)
 
     def merge_parameters(self, params):
         self._parameters.merge(params)
@@ -113,5 +122,6 @@ class Entity(object):
                 'applications': self._applications.as_list(),
                 'parameters': self._parameters.as_dict(),
                 'exports': self._exports.as_dict(),
-                'environment': self._environment
+                'environment': self._environment,
+                'namespaces': list(self._namespaces)
                }

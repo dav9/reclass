@@ -244,6 +244,7 @@ class Core(object):
                                 'name': nodename,
                                 'uri': entity.uri,
                                 'environment': entity.environment,
+                                # 'namespaces': list(entity.namespaces),
                                 'timestamp': Core._get_timestamp()
                                },
               }

@@ -98,8 +98,10 @@ class YamlData(object):
         if parameters is None:
             parameters = {}
 
+        namespace = None
         if options.get('namespaced', False): 
             dirname = os.path.dirname(pathname)
+            namespace = dirname.replace('/', '.')
             namespaced = {}
             last = namespaced
             keys = dirname.split(os.sep)
@@ -122,7 +124,7 @@ class YamlData(object):
         env = self._data.get('environment', None)
 
         return datatypes.Entity(settings, classes=classes, applications=applications, parameters=parameters,
-                                exports=exports, name=name, pathname=pathname, environment=env, uri=self.uri)
+                                exports=exports, name=name, pathname=pathname, environment=env, namespace=namespace, uri=self.uri)
 
     def __str__(self):
         return '<{0} {1}, {2}>'.format(self.__class__.__name__, self._uri,
